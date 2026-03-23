@@ -1,91 +1,98 @@
-![Build Status](https://gitlab.com/pages/<project>/badges/master/build.svg)
+# PortOpener
 
----
+PortOpener is a one-page concept site for a Trainvent startup idea.
 
-Example [Next.js](https://nextjs.org) website using GitLab Pages.
+The idea: make router port forwarding scriptable for server setup flows, instead of forcing people through router admin panels such as `fritz.box` and other vendor UIs.
 
-Learn more about GitLab Pages at https://pages.gitlab.io and the official
-documentation https://docs.gitlab.com/ce/user/project/pages/.
+Example command:
 
----
+```bash
+sudo order-portforward <router-username> <router-password> <port>/<protocol>
+```
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+The site is built with vinext and deployed as a static export on GitLab Pages.
 
-- [GitLab CI](#gitlab-ci)
-- [Building locally](#building-locally)
-- [Add base path in Next.js when unique domain is disabled](#add-base-path-in-nextjs-when-unique-domain-is-disabled)
-- [GitLab User or Group Pages](#gitlab-user-or-group-pages)
-- [Did you fork this project?](#did-you-fork-this-project)
-- [Troubleshooting](#troubleshooting)
+## Project Purpose
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+This is not a shipping product page for a released tool.
 
-## GitLab CI
+It presents PortOpener as an idea for:
 
-This project's static Pages are built by [GitLab CI][ci], following the steps
-defined in [`.gitlab-ci.yml`](.gitlab-ci.yml):
+- automating port forwarding during server installation
+- simplifying homelab and self-hosted service setup
+- reducing router UI friction for inbound networking tasks
+- expanding later into broader local network automation features
 
-contents of .gitlab-ci.yml in codeblock
+## Local Development
 
-## Building locally
+Install dependencies:
 
-To work locally with this project, you'll have to follow the steps below:
+```bash
+npm ci
+```
 
-1. Fork, clone or download this project
-1. Install dependencies: `npm install`
-1. Preview your project: `npm run dev`
-1. Add content
+Start the vinext dev server:
 
-Read more at the Next.js [documentation](https://nextjs.org/docs).
+```bash
+npm run dev
+```
 
-## Add base path in Next.js when unique domain is disabled
+Build the static Pages output:
 
-If you [disable the unique domain](https://docs.gitlab.com/user/project/pages/#unique-domains),
-the site will be hosted under `yourname.gitlab.io/examplerepository/`,
-you will need to configure Next.js to use the `basePath`.
+```bash
+npm run build
+```
 
-In `next.config.mjs`, the value for `basePath` should be your project’s name,
-starting with a forward slash - for example, `/examplerepository`.
-This ensures Next.js understands that your website’s root is `/examplerepository` instead of the default `/`,
-especially when your project is hosted at `https://gitlab.com/yourname/examplerepository/`.
+Preview the production build with vinext:
 
-```js:title=next.config.mjs
+```bash
+npm run start
+```
+
+Legacy Next.js scripts are still available if needed:
+
+```bash
+npm run dev:next
+npm run build:next
+npm run start:next
+```
+
+## GitLab Pages
+
+GitLab Pages is configured in [.gitlab-ci.yml](/home/leonmarq/Code/portopener-website/.gitlab-ci.yml).
+
+The pipeline:
+
+- installs dependencies with `npm ci`
+- runs `npm run build`
+- publishes `dist/client`
+
+This works because vinext builds the site as a static export for this project.
+
+## Important Config
+
+- [package.json](/home/leonmarq/Code/portopener-website/package.json): vinext-first scripts
+- [vite.config.ts](/home/leonmarq/Code/portopener-website/vite.config.ts): vinext Vite config
+- [next.config.mjs](/home/leonmarq/Code/portopener-website/next.config.mjs): keeps `output: "export"` so the site stays static-export compatible
+
+## Base Path Note
+
+If this project is deployed on GitLab Pages under a project path instead of a custom domain, you may need to set `basePath` in [next.config.mjs](/home/leonmarq/Code/portopener-website/next.config.mjs).
+
+Example:
+
+```js
 const nextConfig = {
-  basePath: '/examplerepository',
+  output: "export",
+  basePath: "/portopener-website",
 };
+
 export default nextConfig;
 ```
 
-## GitLab User or Group Pages
+If the site is served from its own domain or from a root-level Pages domain, this is usually not necessary.
 
-To use this project as your user/group website, you will need one additional
-step: just rename your project to `namespace.gitlab.io`, where `namespace` is
-your `username` or `groupname`. This can be done by navigating to your
-project's **Settings**.
+## Contact
 
-Read more about [user/group Pages][userpages] and [project Pages][projpages].
-
-## Did you fork this project?
-
-If you forked this project for your own use, please go to your project's
-**Settings** and remove the forking relationship, which won't be necessary
-unless you want to contribute back to the upstream project.
-
-## Troubleshooting
-
-1. CSS is missing! That means two things:
-
-   Either that you have wrongly set up the CSS URL in your templates, or
-   your static generator has a configuration option that needs to be explicitly
-   set in order to serve static assets under a relative URL.
-
-[ci]: https://about.gitlab.com/gitlab-ci/
-[<project>]: http://link-to-project-main-page
-[install]: http://link-to-install-page
-[documentation]: http://link-to-main-documentation-page
-[userpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#user-or-group-pages
-[projpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#project-pages
-
-----
+- Trainvent: https://next.trainvent.com
+- Email: hello@trainvent.com
