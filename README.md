@@ -10,7 +10,7 @@ Example command:
 sudo order-portforward <router-username> <router-password> <port>/<protocol>
 ```
 
-The site is built with vinext and deployed as a static export on GitLab Pages.
+The site is built with vinext and deployed as a static export on GitHub Pages.
 
 ## Project Purpose
 
@@ -57,11 +57,11 @@ npm run build:next
 npm run start:next
 ```
 
-## GitLab Pages
+## GitHub Pages
 
-GitLab Pages is configured in [.gitlab-ci.yml](/home/leonmarq/Code/portopener-website/.gitlab-ci.yml).
+GitHub Pages is configured in [.github/workflows/deploy-pages.yml](/home/leonmarq/Code/portopener-website/.github/workflows/deploy-pages.yml).
 
-The pipeline:
+The workflow:
 
 - installs dependencies with `npm ci`
 - runs `npm run build`
@@ -73,24 +73,36 @@ This works because vinext builds the site as a static export for this project.
 
 - [package.json](/home/leonmarq/Code/portopener-website/package.json): vinext-first scripts
 - [vite.config.ts](/home/leonmarq/Code/portopener-website/vite.config.ts): vinext Vite config
-- [next.config.mjs](/home/leonmarq/Code/portopener-website/next.config.mjs): keeps `output: "export"` so the site stays static-export compatible
+- [next.config.mjs](/home/leonmarq/Code/portopener-website/next.config.mjs): keeps `output: "export"` and applies `PAGES_BASE_PATH` at build time for GitHub Pages deployments
 
 ## Base Path Note
 
-If this project is deployed on GitLab Pages under a project path instead of a custom domain, you may need to set `basePath` in [next.config.mjs](/home/leonmarq/Code/portopener-website/next.config.mjs).
+This repository is set up for GitHub Pages project-site deployments, so the workflow builds with `PAGES_BASE_PATH` set to `/${{ github.event.repository.name }}`.
+
+For this repository, that means the deployed site uses `/portopener-website` when served from the default GitHub Pages project URL:
+
+```text
+https://<user>.github.io/portopener-website
+```
+
+If you later move the site to a custom domain or any root-level host, leave `PAGES_BASE_PATH` empty.
+
+`next.config.mjs` uses:
 
 Example:
 
 ```js
+const basePath = process.env.PAGES_BASE_PATH || "";
+
 const nextConfig = {
   output: "export",
-  basePath: "/portopener-website",
+  basePath,
 };
 
 export default nextConfig;
 ```
 
-If the site is served from its own domain or from a root-level Pages domain, this is usually not necessary.
+Do not hardcode the repository name in app code. Keep the deployment path in the workflow environment instead.
 
 ## Contact
 
