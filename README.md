@@ -77,15 +77,21 @@ This works because vinext builds the site as a static export for this project.
 
 ## Base Path Note
 
-This repository is set up for GitHub Pages project-site deployments, so the workflow builds with `PAGES_BASE_PATH` set to `/${{ github.event.repository.name }}`.
+This repository is currently set up for custom-domain or other root-host deployments, so the GitHub Pages workflow leaves `PAGES_BASE_PATH` empty.
 
-For this repository, that means the deployed site uses `/portopener-website` when served from the default GitHub Pages project URL:
+That means the exported site uses root asset paths such as:
 
 ```text
-https://<user>.github.io/portopener-website
+/assets/...
 ```
 
-If you later move the site to a custom domain or any root-level host, leave `PAGES_BASE_PATH` empty.
+This is the correct mode for a custom domain like `https://example.com`, where asset URLs must stay root-based instead of using `/portopener-website/...`.
+
+If you ever move back to the default GitHub Pages project URL, set `PAGES_BASE_PATH` in the workflow to:
+
+```text
+/portopener-website
+```
 
 `next.config.mjs` uses:
 
@@ -103,6 +109,10 @@ export default nextConfig;
 ```
 
 Do not hardcode the repository name in app code. Keep the deployment path in the workflow environment instead.
+
+## Custom Domain Note
+
+When GitHub Pages serves this site from a custom domain, add `public/CNAME` with the exact domain name as its only content so the deployment artifact includes it.
 
 ## Contact
 
